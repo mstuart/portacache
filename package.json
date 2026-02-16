@@ -1,6 +1,6 @@
 {
 	"name": "portacache",
-	"version": "0.0.0-development",
+	"version": "1.0.0",
 	"description": "Portable key-value cache that auto-selects the best storage backend",
 	"license": "MIT",
 	"repository": "mstuart/portacache",
