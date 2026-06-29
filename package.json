@@ -41,8 +41,8 @@
 		"is-runtime": "file:../is-runtime"
 	},
 	"devDependencies": {
-		"ava": "^7.0.0",
+		"ava": "^8.0.1",
 		"tsd": "^0.33.0",
-		"xo": "^1.2.3"
+		"xo": "^3.0.2"
 	}
 }
