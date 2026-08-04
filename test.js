@@ -116,7 +116,7 @@ test('stores various value types', async t => {
 	t.deepEqual(await cache.get('object'), {a: 1});
 	t.deepEqual(await cache.get('array'), [1, 2, 3]);
 	t.is(await cache.get('null'), null);
-	t.is(await cache.get('boolean'), true);
+	t.true(await cache.get('boolean'));
 });
 
 test('createCache returns an object with all methods', t => {
