@@ -1,7 +1,16 @@
-# portacache
+<div align="center">
+  <img src="docs/assets/logo.svg" alt="portacache — Portable key-value cache that auto-selects the best storage backend" width="720">
+</div>
 
-> Portable key-value cache that auto-selects the best storage backend
+<p align="center"><strong>Portable key-value cache that auto-selects the best storage backend</strong></p>
 
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
+  <a href="https://www.npmjs.com/package/portacache"><img src="https://img.shields.io/npm/v/portacache?label=npm" alt="npm"></a>
+  <img src="https://img.shields.io/badge/node-%E2%89%A520-339933.svg" alt="Node 20+">
+</p>
+
+---
 ## Install
 
 ```sh
