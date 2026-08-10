@@ -1,54 +1,54 @@
 {
-	"name": "portacache",
-	"version": "1.0.0",
-	"description": "Portable key-value cache that auto-selects the best storage backend",
-	"license": "MIT",
-	"repository": "mstuart/portacache",
-	"funding": "https://github.com/sponsors/mstuart",
-	"author": {
-		"name": "Mark Stuart",
-		"email": "mstuart@users.noreply.github.com",
-		"url": "https://github.com/mstuart"
-	},
-	"type": "module",
-	"exports": {
-		"types": "./index.d.ts",
-		"default": "./index.js"
-	},
-	"sideEffects": false,
-	"engines": {
-		"node": ">=20"
-	},
-	"scripts": {
-		"check": "ultracite check",
-		"fix": "ultracite fix",
-		"test": "ava && tsd"
-	},
-	"files": [
-		"index.js",
-		"index.d.ts"
-	],
-	"keywords": [
-		"cache",
-		"portable",
-		"storage",
-		"memory",
-		"map",
-		"ttl",
-		"key",
-		"value",
-		"universal"
-	],
-	"dependencies": {
-		"is-runtime": "file:../is-runtime"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "2.5.6",
-		"ava": "^7.0.0",
-		"tsd": "^0.33.0",
-		"ultracite": "7.10.2"
-	},
-	"overrides": {
-		"@eslint/plugin-kit": ">=0.3.4"
-	}
+  "name": "portacache",
+  "version": "1.0.0",
+  "description": "Portable key-value cache that auto-selects the best storage backend",
+  "keywords": [
+    "cache",
+    "portable",
+    "storage",
+    "memory",
+    "map",
+    "ttl",
+    "key",
+    "value",
+    "universal"
+  ],
+  "repository": "mstuart/portacache",
+  "funding": "https://github.com/sponsors/mstuart",
+  "license": "MIT",
+  "author": {
+    "name": "Mark Stuart",
+    "email": "mstuart@users.noreply.github.com",
+    "url": "https://github.com/mstuart"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    "types": "./index.d.ts",
+    "default": "./index.js"
+  },
+  "files": [
+    "index.js",
+    "index.d.ts"
+  ],
+  "scripts": {
+    "check": "ultracite check",
+    "fix": "ultracite fix",
+    "test": "ava && tsd"
+  },
+  "overrides": {
+    "@eslint/plugin-kit": ">=0.3.4"
+  },
+  "dependencies": {
+    "is-runtime": "file:../is-runtime"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.6",
+    "ava": "^7.0.0",
+    "tsd": "^0.33.0",
+    "ultracite": "7.10.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
 }
