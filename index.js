@@ -1,78 +1,77 @@
 class MemoryStore {
-	#store = new Map();
+  #store = new Map();
 
-	async get(key) {
-		return this.#store.get(key);
-	}
+  get(key) {
+    return this.#store.get(key);
+  }
 
-	async set(key, value) {
-		this.#store.set(key, value);
-	}
+  set(key, value) {
+    this.#store.set(key, value);
+  }
 
-	async has(key) {
-		return this.#store.has(key);
-	}
+  has(key) {
+    return this.#store.has(key);
+  }
 
-	async delete(key) {
-		return this.#store.delete(key);
-	}
+  delete(key) {
+    return this.#store.delete(key);
+  }
 
-	async clear() {
-		this.#store.clear();
-	}
+  clear() {
+    this.#store.clear();
+  }
 }
 
 export default function createCache(options = {}) {
-	const {ttl: defaultTtl, backend: _backend = 'auto'} = options;
-	const store = new MemoryStore();
+  const { ttl: defaultTtl, backend: _backend = "auto" } = options;
+  const store = new MemoryStore();
 
-	return {
-		async get(key) {
-			const entry = await store.get(key);
+  return {
+    async clear() {
+      await store.clear();
+    },
 
-			if (entry === undefined) {
-				return undefined;
-			}
+    delete(key) {
+      return Promise.resolve(store.delete(key));
+    },
+    async get(key) {
+      const entry = await store.get(key);
 
-			if (entry.expiry !== undefined && Date.now() > entry.expiry) {
-				await store.delete(key);
-				return undefined;
-			}
+      if (entry === undefined) {
+        return;
+      }
 
-			return entry.value;
-		},
+      if (entry.expiry !== undefined && Date.now() > entry.expiry) {
+        await store.delete(key);
+        return;
+      }
 
-		async set(key, value, ttl) {
-			const effectiveTtl = ttl ?? defaultTtl;
-			const entry = {
-				value,
-				expiry: effectiveTtl ? Date.now() + effectiveTtl : undefined,
-			};
+      return entry.value;
+    },
 
-			await store.set(key, entry);
-		},
+    async has(key) {
+      const entry = await store.get(key);
 
-		async has(key) {
-			const entry = await store.get(key);
+      if (entry === undefined) {
+        return false;
+      }
 
-			if (entry === undefined) {
-				return false;
-			}
+      if (entry.expiry !== undefined && Date.now() > entry.expiry) {
+        await store.delete(key);
+        return false;
+      }
 
-			if (entry.expiry !== undefined && Date.now() > entry.expiry) {
-				await store.delete(key);
-				return false;
-			}
+      return true;
+    },
 
-			return true;
-		},
+    async set(key, value, ttl) {
+      const effectiveTtl = ttl ?? defaultTtl;
+      const entry = {
+        expiry: effectiveTtl ? Date.now() + effectiveTtl : undefined,
+        value,
+      };
 
-		async delete(key) {
-			return store.delete(key);
-		},
-
-		async clear() {
-			await store.clear();
-		},
-	};
+      await store.set(key, entry);
+    },
+  };
 }
