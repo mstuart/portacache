@@ -43,7 +43,7 @@
     "is-runtime": "file:../is-runtime"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.6",
+    "@biomejs/biome": "2.5.7",
     "ava": "^7.0.0",
     "tsd": "^0.33.0",
     "ultracite": "7.10.2"
