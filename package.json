@@ -39,9 +39,6 @@
   "overrides": {
     "@eslint/plugin-kit": ">=0.3.4"
   },
-  "dependencies": {
-    "is-runtime": "file:../is-runtime"
-  },
   "devDependencies": {
     "@biomejs/biome": "2.5.8",
     "ava": "^8.0.1",
