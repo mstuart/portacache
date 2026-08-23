@@ -1,5 +1,13 @@
+import { execFile } from "node:child_process";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { promisify } from "node:util";
 import test from "ava";
 import createCache from "./index.js";
+
+const execFileAsync = promisify(execFile);
+const npmCommand = process.platform === "win32" ? "npm.cmd" : "npm";
 
 test("set and get a value", async (t) => {
   const cache = createCache();
@@ -175,4 +183,64 @@ test("multiple independent caches do not interfere", async (t) => {
   await cache2.set("key", "cache2");
   t.is(await cache1.get("key"), "cache1");
   t.is(await cache2.get("key"), "cache2");
+});
+
+test("packed package installs without local dependencies", async (t) => {
+  const temporaryDirectory = await mkdtemp(
+    join(tmpdir(), "portacache-package-")
+  );
+  t.teardown(() => rm(temporaryDirectory, { force: true, recursive: true }));
+
+  const { stdout } = await execFileAsync(
+    npmCommand,
+    ["pack", "--json", "--pack-destination", temporaryDirectory],
+    { cwd: process.cwd() }
+  );
+  const [{ filename }] = JSON.parse(stdout);
+  const tarballPath = join(temporaryDirectory, filename);
+
+  await writeFile(
+    join(temporaryDirectory, "package.json"),
+    JSON.stringify({ private: true, type: "module" })
+  );
+  await execFileAsync(
+    npmCommand,
+    [
+      "install",
+      tarballPath,
+      "--ignore-scripts",
+      "--no-audit",
+      "--no-fund",
+      "--package-lock=false",
+    ],
+    { cwd: temporaryDirectory }
+  );
+
+  const installedManifest = JSON.parse(
+    await readFile(
+      join(temporaryDirectory, "node_modules", "portacache", "package.json"),
+      "utf8"
+    )
+  );
+  const dependencySpecifiers = Object.values(
+    installedManifest.dependencies ?? {}
+  );
+
+  t.false(
+    dependencySpecifiers.some((specifier) => specifier.startsWith("file:"))
+  );
+
+  await execFileAsync(
+    process.execPath,
+    [
+      "--input-type=module",
+      "--eval",
+      `import createCache from "portacache";
+const cache = createCache();
+await cache.set("key", "value");
+if ((await cache.get("key")) !== "value") process.exit(1);
+`,
+    ],
+    { cwd: temporaryDirectory }
+  );
 });
