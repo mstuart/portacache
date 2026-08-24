@@ -91,3 +91,5 @@ Clear all entries from the cache.
 ## License
 
 MIT
+
+<!-- codex review smoke test: temporary, PR will be closed -->
