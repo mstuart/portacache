@@ -24,6 +24,12 @@ class MemoryStore {
 
 export default function createCache(options = {}) {
   const { ttl: defaultTtl, backend: _backend = "auto" } = options;
+  const validateTtl = (ttl) => {
+    if (ttl !== undefined && (!Number.isFinite(ttl) || ttl < 0)) {
+      throw new TypeError("Expected `ttl` to be a non-negative finite number");
+    }
+  };
+  validateTtl(defaultTtl);
   const store = new MemoryStore();
 
   return {
@@ -41,7 +47,7 @@ export default function createCache(options = {}) {
         return;
       }
 
-      if (entry.expiry !== undefined && Date.now() > entry.expiry) {
+      if (entry.expiry !== undefined && Date.now() >= entry.expiry) {
         await store.delete(key);
         return;
       }
@@ -56,7 +62,7 @@ export default function createCache(options = {}) {
         return false;
       }
 
-      if (entry.expiry !== undefined && Date.now() > entry.expiry) {
+      if (entry.expiry !== undefined && Date.now() >= entry.expiry) {
         await store.delete(key);
         return false;
       }
@@ -65,9 +71,11 @@ export default function createCache(options = {}) {
     },
 
     async set(key, value, ttl) {
+      validateTtl(ttl);
       const effectiveTtl = ttl ?? defaultTtl;
       const entry = {
-        expiry: effectiveTtl ? Date.now() + effectiveTtl : undefined,
+        expiry:
+          effectiveTtl === undefined ? undefined : Date.now() + effectiveTtl,
         value,
       };
 
