@@ -71,8 +71,8 @@ export default function createCache(options = {}) {
     },
 
     async set(key, value, ttl) {
+      validateTtl(ttl);
       const effectiveTtl = ttl ?? defaultTtl;
-      validateTtl(effectiveTtl);
       const entry = {
         expiry:
           effectiveTtl === undefined ? undefined : Date.now() + effectiveTtl,

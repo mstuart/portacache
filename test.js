@@ -124,6 +124,9 @@ test("rejects invalid TTL values", async (t) => {
   await t.throwsAsync(cache.set("key", "value", Number.NaN), {
     instanceOf: TypeError,
   });
+  await t.throwsAsync(cache.set("key", "value", null), {
+    instanceOf: TypeError,
+  });
 });
 
 test("stores various value types", async (t) => {
