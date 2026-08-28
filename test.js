@@ -112,6 +112,20 @@ test("entry without TTL does not expire", async (t) => {
   t.is(await cache.get("key"), "value");
 });
 
+test("zero TTL expires immediately", async (t) => {
+  const cache = createCache();
+  await cache.set("key", "value", 0);
+  t.is(await cache.get("key"), undefined);
+});
+
+test("rejects invalid TTL values", async (t) => {
+  t.throws(() => createCache({ ttl: -1 }), { instanceOf: TypeError });
+  const cache = createCache();
+  await t.throwsAsync(cache.set("key", "value", Number.NaN), {
+    instanceOf: TypeError,
+  });
+});
+
 test("stores various value types", async (t) => {
   const cache = createCache();
   await cache.set("number", 42);
