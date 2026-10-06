@@ -45,7 +45,7 @@ await cache.clear();
 
 ### createCache(options?)
 
-Returns a cache instance with `get`, `set`, `has`, `delete`, and `clear` methods. All methods are async and return promises.
+Returns a cache instance with `get`, `set`, `has`, `delete`, `clear`, and `prune` methods. All methods are async and return promises.
 
 #### options
 
@@ -83,6 +83,10 @@ Delete a key from the cache. Returns `true` if the key was deleted.
 ### cache.clear()
 
 Clear all entries from the cache.
+
+### cache.prune()
+
+Remove all expired entries and return the number removed. Expiry cleanup is otherwise lazy: `get` and `has` remove an expired entry only when that key is read. Call `prune` periodically to release expired values for keys that are no longer queried.
 
 ## Related
 

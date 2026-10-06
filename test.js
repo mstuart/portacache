@@ -6,6 +6,31 @@ import { promisify } from "node:util";
 import test from "ava";
 import createCache from "./index.js";
 
+for (const method of ["get", "has"]) {
+  test(`expired ${method} cannot remove a concurrent fresh write`, async (t) => {
+    const cache = createCache();
+    await cache.set("key", "expired", 0);
+    const read = cache[method]("key");
+    await cache.set("key", "fresh");
+    await read;
+    t.is(await cache.get("key"), "fresh");
+  });
+}
+
+test("prune releases unread expired values without removing live entries", async (t) => {
+  const cache = createCache();
+  await cache.set("expired-a", "a", 0);
+  await cache.set("expired-b", "b", 0);
+  await cache.set("live", "live", 60_000);
+  await cache.set("permanent", "permanent");
+  t.is(await cache.prune(), 2);
+  t.false(await cache.delete("expired-a"));
+  t.false(await cache.delete("expired-b"));
+  t.is(await cache.get("live"), "live");
+  t.is(await cache.get("permanent"), "permanent");
+  t.is(await cache.prune(), 0);
+});
+
 const execFileAsync = promisify(execFile);
 const npmCommand = process.platform === "win32" ? "npm.cmd" : "npm";
 

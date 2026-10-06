@@ -13,5 +13,6 @@ expectType<Promise<void>>(cache.set("key", "value", 1000));
 expectType<Promise<boolean>>(cache.has("key"));
 expectType<Promise<boolean>>(cache.delete("key"));
 expectType<Promise<void>>(cache.clear());
+expectType<Promise<number>>(cache.prune());
 
 expectError(createCache({ backend: "invalid" }));
