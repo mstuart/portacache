@@ -20,6 +20,18 @@ class MemoryStore {
   clear() {
     this.#store.clear();
   }
+
+  prune() {
+    const now = Date.now();
+    let removed = 0;
+    for (const [key, entry] of this.#store) {
+      if (entry.expiry !== undefined && now >= entry.expiry) {
+        this.#store.delete(key);
+        removed += 1;
+      }
+    }
+    return removed;
+  }
 }
 
 export default function createCache(options = {}) {
@@ -40,34 +52,40 @@ export default function createCache(options = {}) {
     delete(key) {
       return Promise.resolve(store.delete(key));
     },
+    // biome-ignore lint/suspicious/useAwait: Keep the Promise API while checking memory-store expiry atomically.
     async get(key) {
-      const entry = await store.get(key);
+      const entry = store.get(key);
 
       if (entry === undefined) {
         return;
       }
 
       if (entry.expiry !== undefined && Date.now() >= entry.expiry) {
-        await store.delete(key);
+        store.delete(key);
         return;
       }
 
       return entry.value;
     },
 
+    // biome-ignore lint/suspicious/useAwait: Keep the Promise API while checking memory-store expiry atomically.
     async has(key) {
-      const entry = await store.get(key);
+      const entry = store.get(key);
 
       if (entry === undefined) {
         return false;
       }
 
       if (entry.expiry !== undefined && Date.now() >= entry.expiry) {
-        await store.delete(key);
+        store.delete(key);
         return false;
       }
 
       return true;
+    },
+
+    prune() {
+      return Promise.resolve(store.prune());
     },
 
     async set(key, value, ttl) {

@@ -50,6 +50,11 @@ export interface Cache {
 	@returns `true` if the key exists and has not expired.
 	*/
   has: (key: string) => Promise<boolean>;
+  /**
+  Remove all expired entries, including keys that have not been read.
+  @returns The number of removed entries.
+  */
+  prune: () => Promise<number>;
 
   /**
 	Set a value in the cache.
