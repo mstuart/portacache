@@ -37,7 +37,12 @@
     "test": "ava && tsd"
   },
   "overrides": {
-    "@eslint/plugin-kit": ">=0.3.4"
+    "@eslint/plugin-kit": ">=0.3.4",
+    "supertap": {
+      "js-yaml": {
+        "argparse": "2.0.1"
+      }
+    }
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.15",
